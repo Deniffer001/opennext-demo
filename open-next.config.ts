@@ -8,6 +8,8 @@ export default defineCloudflareConfig({
   // 使用 R2 作为增量缓存来存储 SSG 页面
   incrementalCache: withRegionalCache(r2IncrementalCache, {
     mode: "long-lived",
+    // 启用懒更新，提高缓存命中率
+    shouldLazilyUpdateOnCacheHit: true,
   }),
 
   // 如果你的 SSG 页面有 revalidate 时间，则需要队列来处理重新验证

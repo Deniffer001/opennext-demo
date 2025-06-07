@@ -1,6 +1,7 @@
 import Image from "next/image";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { routing } from "@/i18n/routing";
 
 // 定义数据类型
 interface Post {
@@ -17,7 +18,16 @@ interface User {
   website: string;
 }
 
-export const revalidate = 300;
+export const revalidate = 60; // 与最短的 fetch revalidate 时间一致
+
+// 生成静态参数以支持 ISR
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+// 强制静态生成，避免动态渲染
+export const dynamic = "force-static";
+export const dynamicParams = true;
 
 // 服务器端数据获取函数
 async function fetchPosts(): Promise<Post[]> {
@@ -26,8 +36,7 @@ async function fetchPosts(): Promise<Post[]> {
       "https://jsonplaceholder.typicode.com/posts?_limit=5",
       {
         // 启用缓存，每60秒重新验证一次 (ISR)
-        // next: { revalidate: 60 }
-        // cache: 'no-store'
+        next: { revalidate: 60 },
       }
     );
 
@@ -47,9 +56,8 @@ async function fetchUsers(): Promise<User[]> {
     const response = await fetch(
       "https://jsonplaceholder.typicode.com/users?_limit=3",
       {
-        // 启用缓存，每5分钟重新验证一次 (ISR)
-        // next: { revalidate: 300 }
-        // cache: 'no-store'
+        // 启用缓存，每60秒重新验证一次 (ISR) - 与页面级别保持一致
+        next: { revalidate: 60 },
       }
     );
 
@@ -64,8 +72,21 @@ async function fetchUsers(): Promise<User[]> {
   }
 }
 
-export default async function Home() {
+export default async function Home({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+
+  // 启用静态生成 - 这是关键！
+  setRequestLocale(locale);
+
   const t = await getTranslations("HomePage");
+
+  // 添加渲染时间戳来测试缓存
+  const renderTime = new Date().toISOString();
+  const renderTimestamp = Date.now();
 
   // 在服务器端并行获取数据
   const [posts, users] = await Promise.all([fetchPosts(), fetchUsers()]);
@@ -90,6 +111,20 @@ export default async function Home() {
             <p className="text-gray-600 dark:text-gray-400">
               {t("description")}
             </p>
+
+            {/* 缓存测试信息 */}
+            <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900 rounded-lg text-sm">
+              <p>
+                <strong>Render Time:</strong> {renderTime}
+              </p>
+              <p>
+                <strong>Timestamp:</strong> {renderTimestamp}
+              </p>
+              <p className="text-xs mt-1 text-blue-600 dark:text-blue-400">
+                如果这些时间戳在刷新页面时保持不变，说明页面缓存正在工作
+                (60秒内)
+              </p>
+            </div>
           </div>
 
           {/* Latest Posts */}

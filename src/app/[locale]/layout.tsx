@@ -1,5 +1,5 @@
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages } from "next-intl/server";
+import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -33,6 +33,9 @@ export default async function LocaleLayout({
   if (!routing.locales.includes(locale as (typeof routing.locales)[number])) {
     notFound();
   }
+
+  // 启用静态生成 - 这对缓存很重要！
+  setRequestLocale(locale);
 
   // Providing all messages to the client
   // side is the easiest way to get started

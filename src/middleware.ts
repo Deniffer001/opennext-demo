@@ -7,73 +7,32 @@ const intlMiddleware = createMiddleware(routing);
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const startTime = Date.now();
 
-  // Log the request
-  console.log(
-    `[Middleware] ${request.method} ${pathname} - ${new Date().toISOString()}`
-  );
+  // Skip intl middleware for API routes to preserve caching
+  if (pathname.startsWith("/api/")) {
+    return NextResponse.next();
+  }
 
-  // First, handle internationalization
+  // For non-API routes, handle internationalization
   const intlResponse = intlMiddleware(request);
 
   // If intl middleware returns a response (redirect), use it
   if (intlResponse) {
-    // Add our custom headers to the intl response
-    intlResponse.headers.set(
-      "X-Middleware-Timestamp",
-      new Date().toISOString()
-    );
-    intlResponse.headers.set("X-Middleware-Start-Time", startTime.toString());
-    intlResponse.headers.set("X-Request-Path", pathname);
+    // 只在重定向时添加最少的头部，避免影响缓存
     intlResponse.headers.set("X-Intl-Processed", "true");
     return intlResponse;
   }
 
-  // Add custom headers to track middleware execution
+  // 对于主页面，尽量减少头部添加以保持缓存效果
   const response = NextResponse.next();
 
-  // Add timing information
-  response.headers.set("X-Middleware-Timestamp", new Date().toISOString());
-  response.headers.set("X-Middleware-Start-Time", startTime.toString());
-  response.headers.set("X-Request-Path", pathname);
-  response.headers.set(
-    "X-User-Agent",
-    request.headers.get("user-agent") || "unknown"
-  );
-
-  // Add cache-related headers for testing
-  if (pathname.startsWith("/api/")) {
-    response.headers.set("X-API-Request", "true");
-    response.headers.set("X-Cache-Test", "middleware-processed");
-  }
-
-  // Test different behaviors based on path
-  if (pathname === "/test-redirect") {
-    return NextResponse.redirect(new URL("/test-cache", request.url));
-  }
-
-  if (pathname === "/test-rewrite") {
-    return NextResponse.rewrite(new URL("/test-cache", request.url));
-  }
-
-  // Add custom header for cache testing routes
+  // 只为特定测试路由添加头部
   if (
-    pathname.startsWith("/test-cache") ||
-    pathname.startsWith("/api/cache-demo") ||
-    pathname.startsWith("/api/test-cache")
+    pathname.includes("/test-cache") ||
+    pathname.includes("/test-middleware")
   ) {
     response.headers.set("X-Cache-Testing-Route", "true");
-    response.headers.set(
-      "X-Middleware-Processing-Time",
-      (Date.now() - startTime).toString()
-    );
   }
-
-  // Test blocking certain requests (uncomment to test)
-  // if (pathname === '/blocked') {
-  //   return new NextResponse('Blocked by middleware', { status: 403 });
-  // }
 
   return response;
 }
