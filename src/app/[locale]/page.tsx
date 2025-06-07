@@ -1,4 +1,6 @@
 import Image from "next/image";
+import { getTranslations } from "next-intl/server";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 // 定义数据类型
 interface Post {
@@ -20,51 +22,57 @@ export const revalidate = 300;
 // 服务器端数据获取函数
 async function fetchPosts(): Promise<Post[]> {
   try {
-    const response = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=5', {
-      // 启用缓存，每60秒重新验证一次 (ISR)
-      // next: { revalidate: 60 }
-      // cache: 'no-store'
-    });
+    const response = await fetch(
+      "https://jsonplaceholder.typicode.com/posts?_limit=5",
+      {
+        // 启用缓存，每60秒重新验证一次 (ISR)
+        // next: { revalidate: 60 }
+        // cache: 'no-store'
+      }
+    );
 
     if (!response.ok) {
-      throw new Error('Failed to fetch posts');
+      throw new Error("Failed to fetch posts");
     }
 
     return response.json();
   } catch (error) {
-    console.error('Error fetching posts:', error);
+    console.error("Error fetching posts:", error);
     return [];
   }
 }
 
 async function fetchUsers(): Promise<User[]> {
   try {
-    const response = await fetch('https://jsonplaceholder.typicode.com/users?_limit=3', {
-      // 启用缓存，每5分钟重新验证一次 (ISR)
-      // next: { revalidate: 300 }
-      // cache: 'no-store'
-    });
+    const response = await fetch(
+      "https://jsonplaceholder.typicode.com/users?_limit=3",
+      {
+        // 启用缓存，每5分钟重新验证一次 (ISR)
+        // next: { revalidate: 300 }
+        // cache: 'no-store'
+      }
+    );
 
     if (!response.ok) {
-      throw new Error('Failed to fetch users');
+      throw new Error("Failed to fetch users");
     }
 
     return response.json();
   } catch (error) {
-    console.error('Error fetching users:', error);
+    console.error("Error fetching users:", error);
     return [];
   }
 }
 
 export default async function Home() {
+  const t = await getTranslations("HomePage");
+
   // 在服务器端并行获取数据
-  const [posts, users] = await Promise.all([
-    fetchPosts(),
-    fetchUsers()
-  ]);
+  const [posts, users] = await Promise.all([fetchPosts(), fetchUsers()]);
 
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+      <LanguageSwitcher />
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start max-w-4xl w-full">
         <Image
           className="dark:invert"
@@ -78,15 +86,15 @@ export default async function Home() {
         {/* SSR Data Display Area */}
         <div className="w-full space-y-8">
           <div className="text-center sm:text-left">
-            <h1 className="text-2xl font-bold mb-4">Server-Side Rendering Demo</h1>
+            <h1 className="text-2xl font-bold mb-4">{t("title")}</h1>
             <p className="text-gray-600 dark:text-gray-400">
-              The following data is fetched and rendered on the server, demonstrating Next.js SSR functionality
+              {t("description")}
             </p>
           </div>
 
           {/* Latest Posts */}
           <section className="space-y-4">
-            <h2 className="text-xl font-semibold">Latest Posts</h2>
+            <h2 className="text-xl font-semibold">{t("latestPosts")}</h2>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {posts.map((post) => (
                 <div
@@ -100,7 +108,7 @@ export default async function Home() {
                     {post.body}
                   </p>
                   <div className="mt-2 text-xs text-blue-600 dark:text-blue-400">
-                    Post ID: {post.id}
+                    {t("postId")}: {post.id}
                   </div>
                 </div>
               ))}
@@ -109,7 +117,7 @@ export default async function Home() {
 
           {/* User Information */}
           <section className="space-y-4">
-            <h2 className="text-xl font-semibold">User Information</h2>
+            <h2 className="text-xl font-semibold">{t("userInformation")}</h2>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {users.map((user) => (
                 <div

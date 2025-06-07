@@ -1,0 +1,65 @@
+{
+  "HomePage": {
+    "title": "Server-Side Rendering Demo",
+    "description": "The following data is fetched and rendered on the server, demonstrating Next.js SSR functionality",
+    "latestPosts": "Latest Posts",
+    "userInformation": "User Information",
+    "postId": "Post ID",
+    "pageUpdated": "Page updated to use Server-Side Rendering (SSR)",
+    "dataRendered": "Data is fetched and rendered on the server"
+  },
+  "TestCache": {
+    "title": "Cache Testing Dashboard",
+    "basicCache": "Test Basic Cache",
+    "revalidate10s": "Cache (10s revalidate)",
+    "noCache": "No Cache",
+    "isr10s": "ISR 10s",
+    "isr60s": "ISR 60s",
+    "forceCache": "Force Cache",
+    "clearResults": "Clear Results",
+    "totalRequests": "Total requests",
+    "loading": "Loading...",
+    "instructions": {
+      "title": "Testing Instructions:",
+      "clickSame": "Click the same button multiple times quickly to test caching",
+      "compareTimestamps": "Compare timestamps and requestId to see if responses are cached",
+      "waitRevalidation": "Wait for revalidation time to pass, then test again",
+      "checkNetwork": "Check the browser Network tab to see actual HTTP requests",
+      "noCache": "No Cache should always make new requests",
+      "isr": "ISR endpoints should cache responses for the specified duration"
+    }
+  },
+  "TestMiddleware": {
+    "title": "Middleware Testing Dashboard",
+    "currentPageInfo": "Current Page Request Info",
+    "url": "URL",
+    "timestamp": "Timestamp",
+    "headersFromMiddleware": "Headers from Middleware",
+    "loadingInfo": "Loading request info...",
+    "testApiMiddleware": "Test API Middleware",
+    "testCacheDemoApi": "Test Cache Demo API",
+    "testPageMiddleware": "Test Page Middleware",
+    "testRedirect": "Test Redirect",
+    "testRewrite": "Test Rewrite",
+    "testHomePage": "Test Home Page",
+    "totalTests": "Total tests",
+    "middlewareHeaders": "Middleware Headers",
+    "allResponseHeaders": "All Response Headers",
+    "guide": {
+      "title": "Middleware Testing Guide:",
+      "headers": "Headers: Check for X-Middleware-* headers added by middleware",
+      "timing": "Timing: X-Middleware-Processing-Time shows middleware execution time",
+      "apiRoutes": "API Routes: Should have X-API-Request and X-Cache-Test headers",
+      "redirect": "Redirect: /test-redirect should redirect to /test-cache",
+      "rewrite": "Rewrite: /test-rewrite should show /test-cache content but keep URL",
+      "cacheRoutes": "Cache Routes: Should have X-Cache-Testing-Route header",
+      "console": "Console: Check browser console for middleware logs"
+    }
+  },
+  "Navigation": {
+    "home": "Home",
+    "testCache": "Test Cache",
+    "testMiddleware": "Test Middleware",
+    "language": "Language"
+  }
+}

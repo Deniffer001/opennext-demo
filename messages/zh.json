@@ -1,0 +1,65 @@
+{
+  "HomePage": {
+    "title": "服务器端渲染演示",
+    "description": "以下数据在服务器端获取并渲染，展示了 Next.js 的 SSR 功能",
+    "latestPosts": "最新文章",
+    "userInformation": "用户信息",
+    "postId": "文章 ID",
+    "pageUpdated": "页面已改为服务器端渲染 (SSR)",
+    "dataRendered": "数据在服务器端获取并渲染到页面中"
+  },
+  "TestCache": {
+    "title": "缓存测试仪表板",
+    "basicCache": "测试基础缓存",
+    "revalidate10s": "缓存 (10秒重新验证)",
+    "noCache": "无缓存",
+    "isr10s": "ISR 10秒",
+    "isr60s": "ISR 60秒",
+    "forceCache": "强制缓存",
+    "clearResults": "清除结果",
+    "totalRequests": "总请求数",
+    "loading": "加载中...",
+    "instructions": {
+      "title": "测试说明：",
+      "clickSame": "快速多次点击同一按钮来测试缓存",
+      "compareTimestamps": "比较时间戳和 requestId 来查看响应是否被缓存",
+      "waitRevalidation": "等待重新验证时间过去，然后再次测试",
+      "checkNetwork": "检查浏览器网络选项卡以查看实际的 HTTP 请求",
+      "noCache": "无缓存应该总是发起新请求",
+      "isr": "ISR 端点应该在指定时间内缓存响应"
+    }
+  },
+  "TestMiddleware": {
+    "title": "中间件测试仪表板",
+    "currentPageInfo": "当前页面请求信息",
+    "url": "网址",
+    "timestamp": "时间戳",
+    "headersFromMiddleware": "来自中间件的头部",
+    "loadingInfo": "正在加载请求信息...",
+    "testApiMiddleware": "测试 API 中间件",
+    "testCacheDemoApi": "测试缓存演示 API",
+    "testPageMiddleware": "测试页面中间件",
+    "testRedirect": "测试重定向",
+    "testRewrite": "测试重写",
+    "testHomePage": "测试主页",
+    "totalTests": "总测试数",
+    "middlewareHeaders": "中间件头部",
+    "allResponseHeaders": "所有响应头部",
+    "guide": {
+      "title": "中间件测试指南：",
+      "headers": "头部：检查中间件添加的 X-Middleware-* 头部",
+      "timing": "时间：X-Middleware-Processing-Time 显示中间件执行时间",
+      "apiRoutes": "API 路由：应该有 X-API-Request 和 X-Cache-Test 头部",
+      "redirect": "重定向：/test-redirect 应该重定向到 /test-cache",
+      "rewrite": "重写：/test-rewrite 应该显示 /test-cache 内容但保持 URL",
+      "cacheRoutes": "缓存路由：应该有 X-Cache-Testing-Route 头部",
+      "console": "控制台：检查浏览器控制台的中间件日志"
+    }
+  },
+  "Navigation": {
+    "home": "首页",
+    "testCache": "测试缓存",
+    "testMiddleware": "测试中间件",
+    "language": "语言"
+  }
+}
